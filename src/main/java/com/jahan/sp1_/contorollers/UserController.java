@@ -1,19 +1,22 @@
 package com.jahan.sp1_.contorollers;
 
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import com.jahan.sp1_.services.InsertService;
 import com.jahan.sp1_.services.UserInput;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
 
     private final UserInput userInput;
+    private final InsertService insertService;
 
     @Autowired
-    public UserController(UserInput userInput) {
+    public UserController(UserInput userInput, InsertService insertService) {
         this.userInput = userInput;
+        this.insertService = insertService;
     }
 
     @PostMapping("/create")
@@ -22,10 +25,26 @@ public class UserController {
                              @RequestParam String nationalCode,
                              @RequestParam String email,
                              @RequestParam String slevel) {
+        try {
+            // اعتبارسنجی ورودی‌ها
+            UserInput.UserDTO userDTO = userInput.validateAndPrepareInputs(id, name, nationalCode, email, slevel);
 
-        Object[] userInputs = userInput.getUserInputs(id, name, nationalCode, email, slevel);
-        // در اینجا می‌توانید داده‌ها را در دیتابیس ذخیره کنید یا هر کار دیگری انجام دهید
+            // ذخیره در دیتابیس
+            // ایجاد آرایه از مقادیر userDTO برای ارسال به insertUserData
+            Object[] userData = {userDTO.getId(), userDTO.getName(), userDTO.getNationalCode(), userDTO.getEmail(), userDTO.getSlevel()};
 
-        return "User created with ID: " + userInputs[0];
+            // ارسال داده‌ها به متد insertUserData
+            insertService.insertUserData(userData);
+
+            return "User created successfully with ID: " + userDTO.getId();
+        } catch (IllegalArgumentException e) {
+            return "Error: " + e.getMessage();
+        }
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleIllegalArgument(IllegalArgumentException ex) {
+        return ex.getMessage();
     }
 }

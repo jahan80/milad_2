@@ -1,34 +1,94 @@
 package com.jahan.sp1_.services;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UserInput {
 
-    private final Emailchecker emailchecker;
+    private final EmailChecker emailChecker;
 
     @Autowired
-    public UserInput(Emailchecker emailchecker) {
-        this.emailchecker = emailchecker;
+    public UserInput(EmailChecker emailChecker) {
+        this.emailChecker = emailChecker;
     }
 
-    public Object[] getUserInputs(int id, String name, String nationalCode, String email, String slevel) {
+    // تعریف کلاس UserDTO به صورت داخلی
+    public static class UserDTO {
+        private int id;
+        private String name;
+        private String nationalCode;
+        private String email;
+        private String slevel;
 
-        // بررسی صحت ایمیل
-        while (!emailchecker.isValidEmail(email)) {  // استفاده از شیء تزریق شده
-            System.out.println("Invalid email format. Please try again.");
-            // شما می‌توانید با اضافه کردن ورودی از کنترلر برای ایمیل در اینجا اقدام کنید
+        // Constructor
+        public UserDTO(int id, String name, String nationalCode, String email, String slevel) {
+            this.id = id;
+            this.name = name;
+            this.nationalCode = nationalCode;
+            this.email = email;
+            this.slevel = slevel;
         }
 
-        // بررسی صحت سطح (slevel)
-        while (!(slevel.equals("E") || slevel.equals("R") || slevel.equals("D"))) {
-            System.out.println("Invalid input. Please enter one of the values E, R, or D.");
-            // شما می‌توانید با اضافه کردن ورودی از کنترلر برای slevel در اینجا اقدام کنید
+        // Getters and Setters
+        public int getId() {
+            return id;
         }
 
-        // بازگشت ورودی‌ها به صورت یک آرایه
-        return new Object[]{id, name, nationalCode, email, slevel};
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getNationalCode() {
+            return nationalCode;
+        }
+
+        public void setNationalCode(String nationalCode) {
+            this.nationalCode = nationalCode;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
+        }
+
+        public String getSlevel() {
+            return slevel;
+        }
+
+        public void setSlevel(String slevel) {
+            this.slevel = slevel;
+        }
+    }
+
+    // متد validateAndPrepareInputs
+    public UserDTO validateAndPrepareInputs(int id, String name, String nationalCode, String email, String slevel) {
+        if (!emailChecker.isValidEmail(email)) {
+            throw new IllegalArgumentException("Invalid email format: " + email);
+        }
+        if (!slevel.matches("[ERD]")) {
+            throw new IllegalArgumentException("Invalid level: " + slevel);
+        }
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Name cannot be null or empty");
+        }
+        if (!nationalCode.matches("\\d{10}")) {
+            throw new IllegalArgumentException("Invalid national code: must be 10 digits");
+        }
+
+        return new UserDTO(id, name, nationalCode, email, slevel);
     }
 }
+
+

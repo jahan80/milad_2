@@ -1,8 +1,6 @@
 package com.jahan.sp1_.contorollers;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
+
 import com.jahan.sp1_.services.BulkInsertService;
 import com.jahan.sp1_.services.InsertService;
 import com.jahan.sp1_.services.SearchService;
@@ -41,7 +39,7 @@ public class MainController {
     }
 
     @GetMapping("/search")
-    public String searchUser(@RequestParam String partialNationalCode) {
+        public String search(@RequestParam String partialNationalCode) {
         return searchService.searchByPartialNationalCode(partialNationalCode);
     }
 }

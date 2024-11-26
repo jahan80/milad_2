@@ -29,6 +29,7 @@ public class SearchService {
             }
         });
 
-        return result.isEmpty() ? "No records found" : result.toString();
+        // بررسی اینکه آیا هیچ نتیجه‌ای یافت نشده است
+        return result.length() == 0 ? "No records found" : result.toString();
     }
 }

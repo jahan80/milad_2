@@ -10,7 +10,7 @@ public class CreateTbl {
 
     private final JdbcTemplate jdbcTemplate;
     private final TblChecker tblChecker;
-    private final String tblName = "student_";
+    public final String tblName = "student_";
 
     @Autowired
     public CreateTbl(JdbcTemplate jdbcTemplate, TblChecker tblChecker) {

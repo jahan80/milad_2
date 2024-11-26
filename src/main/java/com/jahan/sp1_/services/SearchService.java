@@ -14,11 +14,27 @@ public class SearchService {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public String searchByPartialNationalCode(String partialNationalCode) {
-        String searchQuery = "SELECT * FROM student_ WHERE national_code LIKE ?";
+    // افزودن پارامترهای page و size
+    public String searchByPartialNationalCode(String partialNationalCode, int page, int size) {
+        // محاسبه offset بر اساس صفحه و اندازه
+        int offset = (page - 1) * size;
+
+        // کوئری با استفاده از ROWNUM برای صفحه‌بندی در Oracle 11g
+        String searchQuery = "SELECT * FROM ( " +
+                "  SELECT student_.*, ROWNUM AS rn " +
+                "  FROM student_ " +
+                "  WHERE national_code LIKE ? " +
+                ") " +
+                "WHERE rn BETWEEN ? AND ?";
+
         StringBuilder result = new StringBuilder();
 
-        jdbcTemplate.query(searchQuery, new Object[]{"%" + partialNationalCode + "%"}, rs -> {
+        // اجرای کوئری با پارامترها
+        jdbcTemplate.query(searchQuery, new Object[]{
+                "%" + partialNationalCode + "%",  // کد ملی جزئی
+                offset + 1,  // آدرس شروع نتایج (محاسبه‌شده برای صفحه)
+                offset + size  // آدرس پایان نتایج (محاسبه‌شده برای صفحه)
+        }, rs -> {
             while (rs.next()) {
                 result.append("ID: ").append(rs.getInt("id"))
                         .append(", Name: ").append(rs.getString("name"))

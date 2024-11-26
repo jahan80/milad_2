@@ -38,8 +38,11 @@ public class MainController {
         return "User added successfully!";
     }
 
+
     @GetMapping("/search")
-        public String search(@RequestParam String partialNationalCode) {
-        return searchService.searchByPartialNationalCode(partialNationalCode);
+    public String search(@RequestParam String partialNationalCode,
+                         @RequestParam(defaultValue = "1") int page,
+                         @RequestParam(defaultValue = "10") int size) {
+        return searchService.searchByPartialNationalCode(partialNationalCode, page, size);
     }
 }

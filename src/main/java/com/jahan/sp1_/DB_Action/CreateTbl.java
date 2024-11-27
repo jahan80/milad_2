@@ -40,7 +40,8 @@ public class CreateTbl {
                         "name VARCHAR2(50), " +
                         "national_code VARCHAR2(50), " +
                         "email_id VARCHAR2(50), " +
-                        "slevel VARCHAR2(50))";
+                        "slevel VARCHAR2(50),"+
+                        "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP )" ;
 
         try {
             jdbcTemplate.execute(createTableSQL);

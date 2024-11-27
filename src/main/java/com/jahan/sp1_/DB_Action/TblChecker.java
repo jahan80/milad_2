@@ -1,36 +1,34 @@
 package com.jahan.sp1_.DB_Action;
 
-
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-import javax.sql.DataSource;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-@Component
+@Service
 public class TblChecker {
+
+    private static final Logger logger = LoggerFactory.getLogger(TblChecker.class);
 
     private final JdbcTemplate jdbcTemplate;
 
-    // استفاده از JdbcTemplate به جای Connection مستقیم
     @Autowired
-    public TblChecker(DataSource dataSource) {
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
+    public TblChecker(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+        logger.info("TblChecker initialized");
     }
 
     public boolean doesTableExist(String tableName) {
+        String query = "SELECT COUNT(*) FROM all_tables WHERE table_name = ?";
         try {
-            DatabaseMetaData metaData = jdbcTemplate.getDataSource().getConnection().getMetaData();
-            try (ResultSet resultSet = metaData.getTables(null, null, tableName.toUpperCase(), new String[]{"TABLE"})) {
-                return resultSet.next();  // اگر جدول وجود داشته باشد، true برمی‌گرداند
-            }
-        } catch (SQLException e) {
-            System.out.println("Error in checking table existence");
-            e.printStackTrace();
+            logger.info("Checking existence of table '{}'", tableName);
+            Integer count = jdbcTemplate.queryForObject(query, new Object[]{tableName.toUpperCase()}, Integer.class);
+            boolean exists = count != null && count > 0;
+            logger.info("Table '{}' exists: {}", tableName, exists);
+            return exists;
+        } catch (Exception e) {
+            logger.error("Error while checking existence of table '{}'", tableName, e);
             return false;
         }
     }

@@ -1,9 +1,10 @@
 package com.jahan.sp1_.contorollers;
 
-
 import com.jahan.sp1_.services.BulkInsertService;
 import com.jahan.sp1_.services.InsertService;
 import com.jahan.sp1_.services.SearchService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,8 +12,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 public class MainController {
 
-    private final BulkInsertService bulkInsertService;
+    private static final Logger logger = LoggerFactory.getLogger(MainController.class);
 
+    private final BulkInsertService bulkInsertService;
     private final InsertService insertService;
     private final SearchService searchService;
 
@@ -21,21 +23,28 @@ public class MainController {
         this.bulkInsertService = bulkInsertService;
         this.insertService = insertService;
         this.searchService = searchService;
+        logger.info("MainController initialized");
     }
 
     @PostMapping("/init")
     public String initializeDatabase() {
+        logger.info("Initializing database with bulk insert");
         bulkInsertService.insertGeneratedData(500);
+        logger.info("Database initialized successfully");
         return "Database initialized successfully!";
     }
+
 
     @PostMapping("/user")
     public String addUser(@RequestParam int id, @RequestParam String name,
                           @RequestParam String nationalCode, @RequestParam String email,
                           @RequestParam String slevel) {
-        Object[] userData = {id, name, nationalCode, email, slevel};
-        insertService.insertUserData(userData);
-        return "User added successfully!";
+        try {
+            insertService.insertUserData(id, name, nationalCode, email, slevel);
+            return "User added successfully!";
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
+        }
     }
 
 
@@ -43,6 +52,9 @@ public class MainController {
     public String search(@RequestParam String partialNationalCode,
                          @RequestParam(defaultValue = "1") int page,
                          @RequestParam(defaultValue = "10") int size) {
-        return searchService.searchByPartialNationalCode(partialNationalCode, page, size);
+        logger.info("Searching users with partialNationalCode: {}, page: {}, size: {}", partialNationalCode, page, size);
+        String result = searchService.searchByPartialNationalCode(partialNationalCode, page, size);
+        logger.info("Search completed with result: {}", result.isEmpty() ? "No results" : "Results found");
+        return result;
     }
 }

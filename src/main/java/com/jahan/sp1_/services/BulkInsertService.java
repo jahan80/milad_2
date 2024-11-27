@@ -1,7 +1,7 @@
 package com.jahan.sp1_.services;
-
 import com.jahan.sp1_.DB_Action.CreateTbl;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -12,6 +12,8 @@ import java.util.List;
 @Service
 public class BulkInsertService {
 
+    private static final Logger logger = LoggerFactory.getLogger(BulkInsertService.class);
+
     private final JdbcTemplate jdbcTemplate;
     private final GenerateData generateData;
     private final CreateTbl createTbl;
@@ -21,19 +23,16 @@ public class BulkInsertService {
         this.jdbcTemplate = jdbcTemplate;
         this.generateData = generateData;
         this.createTbl = createTbl;
+        logger.info("BulkInsertService initialized");
     }
 
-    // متد برای وارد کردن داده‌ها به صورت دسته‌ای
     public void insertGeneratedData(int recordCount) {
-        // ابتدا جدول را بررسی و ایجاد می‌کنیم
+        logger.info("Bulk inserting {} records", recordCount);
         createTbl.createTable();
 
         String insertQuery = "INSERT INTO student_ (id, name, national_code, email_id, slevel) VALUES (?, ?, ?, ?, ?)";
-
-        // لیست برای نگهداری داده‌های ایجاد شده
         List<Object[]> batchArgs = new ArrayList<>();
 
-        // تولید داده‌ها
         for (int i = 0; i < recordCount; i++) {
             Object[] data = new Object[]{
                     generateData.generateUniqueId(),
@@ -42,12 +41,10 @@ public class BulkInsertService {
                     generateData.generateRandomEmail(),
                     generateData.generateRandomLevel()
             };
-            batchArgs.add(data);  // اضافه کردن داده به لیست
+            batchArgs.add(data);
         }
 
-        // استفاده از batchInsert برای وارد کردن داده‌ها به صورت دسته‌ای
         jdbcTemplate.batchUpdate(insertQuery, batchArgs);
-
-        System.out.println(recordCount + " records inserted successfully.");
+        logger.info("{} records inserted successfully", recordCount);
     }
 }

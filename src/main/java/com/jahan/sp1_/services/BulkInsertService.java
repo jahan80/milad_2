@@ -30,12 +30,13 @@ public class BulkInsertService {
         logger.info("Bulk inserting {} records", recordCount);
         createTbl.createTable();
 
-        String insertQuery = "INSERT INTO student_ (id, name, national_code, email_id, slevel) VALUES (?, ?, ?, ?, ?)";
+        String insertQuery = "INSERT INTO student_ (name, national_code, email_id, slevel) VALUES (?, ?, ?, ?)";
+
         List<Object[]> batchArgs = new ArrayList<>();
 
         for (int i = 0; i < recordCount; i++) {
             Object[] data = new Object[]{
-                    generateData.generateUniqueId(),
+                    //generateData.generateUniqueId(),
                     generateData.generateRandomName(),
                     generateData.generateRandomNationalCode(),
                     generateData.generateRandomEmail(),

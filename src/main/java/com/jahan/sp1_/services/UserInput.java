@@ -15,15 +15,15 @@ public class UserInput {
 
     // تعریف کلاس UserDTO به صورت داخلی
     public static class UserDTO {
-        private int id;
+ //       private int id;
         private String name;
         private String nationalCode;
         private String email;
         private String slevel;
 
         // Constructor
-        public UserDTO(int id, String name, String nationalCode, String email, String slevel) {
-            this.id = id;
+        public UserDTO( String name, String nationalCode, String email, String slevel) {
+//            this.id = id;
             this.name = name;
             this.nationalCode = nationalCode;
             this.email = email;
@@ -31,13 +31,13 @@ public class UserInput {
         }
 
         // Getters and Setters
-        public int getId() {
-            return id;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
+//        public int getId() {
+//            return id;
+//        }
+//
+//        public void setId(int id) {
+//            this.id = id;
+//        }
 
         public String getName() {
             return name;
@@ -73,7 +73,7 @@ public class UserInput {
     }
 
     // متد validateAndPrepareInputs
-    public UserDTO validateAndPrepareInputs(int id, String name, String nationalCode, String email, String slevel) {
+    public UserDTO validateAndPrepareInputs(  String name, String nationalCode, String email, String slevel) {
         if (!emailChecker.isValidEmail(email)) {
             throw new IllegalArgumentException("Invalid email format: " + email);
         }
@@ -87,7 +87,7 @@ public class UserInput {
             throw new IllegalArgumentException("Invalid national code: must be 10 digits");
         }
 
-        return new UserDTO(id, name, nationalCode, email, slevel);
+        return new UserDTO( name, nationalCode, email, slevel);
     }
 }
 

@@ -1,5 +1,6 @@
 package com.jahan.sp1_.services;
 
+import com.jahan.sp1_.DB_Action.CreateTbl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +29,8 @@ public class SearchService {
         logger.debug("Calculated offset: {}", offset);
 
         String searchQuery = "SELECT * FROM ( " +
-                "  SELECT student_.*, ROWNUM AS rn " +
-                "  FROM student_ " +
+                "  SELECT "+ CreateTbl.tblName+ ".*, ROWNUM AS rn " +
+                "  FROM "+CreateTbl.tblName  +" " +
                 "  WHERE national_code LIKE ? " +
                 ") " +
                 "WHERE rn BETWEEN ? AND ?";

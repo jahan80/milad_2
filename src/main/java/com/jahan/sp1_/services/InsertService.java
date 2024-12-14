@@ -1,5 +1,6 @@
 package com.jahan.sp1_.services;
 
+import com.jahan.sp1_.DB_Action.CreateTbl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -16,16 +17,16 @@ public class InsertService {
         this.userInput = userInput;
     }
 
-    public void insertUserData(int id, String name, String nationalCode, String email, String slevel) {
+    public void insertUserData( String name, String nationalCode, String email, String slevel) {
         try {
             // اعتبارسنجی و آماده‌سازی داده‌ها
-            UserInput.UserDTO userDTO = userInput.validateAndPrepareInputs(id, name, nationalCode, email, slevel);
+            UserInput.UserDTO userDTO = userInput.validateAndPrepareInputs(name, nationalCode, email, slevel);
 
             // کوئری SQL برای درج داده‌ها در جدول
-            String insertQuery = "INSERT INTO student_ (id, name, national_code, email_id, slevel) VALUES (?, ?, ?, ?, ?)";
+            String insertQuery = "INSERT INTO "+ CreateTbl.tblName +" ( name, national_code, email_id, slevel) VALUES ( ?, ?, ?, ?)";
 
             // اجرای کوئری
-            jdbcTemplate.update(insertQuery, userDTO.getId(), userDTO.getName(), userDTO.getNationalCode(),
+            jdbcTemplate.update(insertQuery, userDTO.getName(), userDTO.getNationalCode(),
                     userDTO.getEmail(), userDTO.getSlevel());
 
             System.out.println("User data inserted successfully");

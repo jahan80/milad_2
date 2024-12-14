@@ -15,13 +15,13 @@ public class GenerateData {
     private int currentId = 1;
     private final Random random = new Random();
 
-    public int generateUniqueId() {
-        logger.info("generateUniqueId ok");
-        return currentId++;
-    }
+//    public int generateUniqueId() {
+//        logger.info("generateUniqueId ok");
+//        return currentId++;
+//    }
 
     public String generateRandomName() {
-        String[] names = {"John", "Alice", "Bob", "Emma", "Oliver", "Sophia"};
+        String[] names = {"jahan", "milad", "ahmad", "mohammad", "parsa", "omid"};
         return names[random.nextInt(names.length)];
     }
 

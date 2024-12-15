@@ -34,19 +34,17 @@ public class MainController {
         return "Database initialized successfully!";
     }
 
-
     @PostMapping("/user")
-    public String addUser( @RequestParam String name,
+    public String addUser(@RequestParam String name,
                           @RequestParam String nationalCode, @RequestParam String email,
                           @RequestParam String slevel) {
         try {
-            insertService.insertUserData( name, nationalCode, email, slevel.trim().toUpperCase());
+            insertService.insertUserData(name, nationalCode, email, slevel.trim().toUpperCase());
             return "User added successfully!";
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
     }
-
 
     @GetMapping("/search")
     public String search(@RequestParam String partialNationalCode,

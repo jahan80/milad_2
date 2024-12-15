@@ -36,15 +36,21 @@ public class MainController {
 
     @PostMapping("/user")
     public String addUser(@RequestParam String name,
-                          @RequestParam String nationalCode, @RequestParam String email,
+                          @RequestParam String nationalCode,
+                          @RequestParam String email,
                           @RequestParam String slevel) {
         try {
             insertService.insertUserData(name, nationalCode, email, slevel.trim().toUpperCase());
             return "User added successfully!";
+        } catch (IllegalArgumentException e) {
+            logger.error("Validation error: {}", e.getMessage(), e);
+            return "Validation error: " + e.getMessage();
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            logger.error("Unexpected error while adding user: {}", e.getMessage(), e);
+            return "An unexpected error occurred: " + e.getMessage();
         }
     }
+
 
     @GetMapping("/search")
     public String search(@RequestParam String partialNationalCode,

@@ -1,0 +1,11 @@
+
+
+#exec with timezone
+java -Duser.timezone=Asia/Tehran -jar sp1_-0.0.1-SNAPSHOT.jar
+
+
+#exec with nohup
+ nohup java -jar sp1_-0.0.1-SNAPSHOT.jar &
+
+
+

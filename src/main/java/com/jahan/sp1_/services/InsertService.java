@@ -17,22 +17,16 @@ public class InsertService {
         this.userInput = userInput;
     }
 
-    public void insertUserData( String name, String nationalCode, String email, String slevel) {
+    public void insertUserData(String name, String nationalCode, String email, String slevel) {
         try {
-            // اعتبارسنجی و آماده‌سازی داده‌ها
             UserInput.UserDTO userDTO = userInput.validateAndPrepareInputs(name, nationalCode, email, slevel);
-
-            // کوئری SQL برای درج داده‌ها در جدول
-            String insertQuery = "INSERT INTO "+ CreateTbl.tblName +" ( name, national_code, email_id, slevel) VALUES ( ?, ?, ?, ?)";
-
-            // اجرای کوئری
-            jdbcTemplate.update(insertQuery, userDTO.getName(), userDTO.getNationalCode(),
-                    userDTO.getEmail(), userDTO.getSlevel());
-
+            String insertQuery = "INSERT INTO " + CreateTbl.tblName + " (name, national_code, email_id, slevel) VALUES (?, ?, ?, ?)";
+            jdbcTemplate.update(insertQuery, userDTO.getName(), userDTO.getNationalCode(), userDTO.getEmail(), userDTO.getSlevel());
             System.out.println("User data inserted successfully");
         } catch (Exception e) {
-            e.printStackTrace();
             System.err.println("Error while saving user data: " + e.getMessage());
+            // پرتاب مجدد خطا
+            throw new RuntimeException("Error during user data insertion: " + e.getMessage(), e);
         }
     }
 }

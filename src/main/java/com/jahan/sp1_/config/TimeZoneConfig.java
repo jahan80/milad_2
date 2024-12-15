@@ -9,7 +9,7 @@ import java.util.TimeZone;
 public class TimeZoneConfig {
 
     @PostConstruct
-    public void init() {
+    public void def_zone() {
         // تنظیم تایم‌زون پیش‌فرض به Asia/Tehran
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Tehran"));
         System.out.println("Default TimeZone set to: " + TimeZone.getDefault().getID());

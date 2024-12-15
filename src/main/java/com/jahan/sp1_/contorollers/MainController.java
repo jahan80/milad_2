@@ -36,11 +36,11 @@ public class MainController {
 
 
     @PostMapping("/user")
-    public String addUser(@RequestParam int id, @RequestParam String name,
+    public String addUser( @RequestParam String name,
                           @RequestParam String nationalCode, @RequestParam String email,
                           @RequestParam String slevel) {
         try {
-            insertService.insertUserData(id, name, nationalCode, email, slevel);
+            insertService.insertUserData( name, nationalCode, email, slevel.trim().toUpperCase());
             return "User added successfully!";
         } catch (Exception e) {
             return "Error: " + e.getMessage();
